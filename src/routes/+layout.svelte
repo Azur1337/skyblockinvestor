@@ -1,6 +1,8 @@
 <script lang=ts>
     import { onMount } from 'svelte';
-    import { LinkedChart, LinkedLabel, LinkedValue } from "svelte-tiny-linked-charts"
+    import { Line } from 'svelte-chartjs'
+    import {Chart as ChartJS, Title,Tooltip,Legend,LineElement,LinearScale,PointElement,CategoryScale,} from 'chart.js';
+    ChartJS.register(Title,Tooltip,Legend,LineElement,LinearScale,PointElement,CategoryScale);
     let items: any[] = [];
     let showToast = false;
     let toastMessage = "";
@@ -9,7 +11,7 @@
     let filteredItems: any[] = [];
     let theme: any;
     let selectedItem:any;
-    let data:any;
+    let selectedItemData:any;
     
     onMount(() => {
       getItems();
@@ -76,40 +78,54 @@
     
     function selectItem(item: any) {
         selectedItem = item;
-        data = {
-            "2024-01-01": Math.random() *100 % 100,
-            "2024-01-02": Math.random() *100 % 100,
-            "2024-01-03": Math.random() * 100 % 100,
-            "2024-01-04": Math.random() * 100 % 100,
-            "2024-01-05": Math.random() * 100 % 100,
-            "2024-01-06": Math.random() * 100 % 100,
-            "2024-01-07": Math.random() * 100 % 100,
-            "2024-01-08": Math.random() * 100 % 100,
-            "2024-01-09": Math.random() * 100 % 100,
-            "2024-01-10": Math.random() * 100 % 100,
-            "2024-01-11": Math.random() * 100 % 100,
-            "2024-01-12": Math.random() * 100 % 100,
-            "2024-01-13": Math.random() * 100 % 100,
-            "2024-01-14": Math.random() * 100 % 100,
-            "2024-01-15": Math.random() * 100 % 100,
-            "2024-01-16": Math.random() * 100 % 100,
-            "2024-01-17": Math.random() * 100 % 100,
-            "2024-01-18": Math.random() * 100 % 100,
-            "2024-01-19": Math.random() * 100 % 100,
-            "2024-01-20": Math.random() * 100 % 100,
-            "2024-01-21": Math.random() * 100 % 100,
-            "2024-01-22": Math.random() * 100 % 100,
-            "2024-01-23": Math.random() * 100 % 100,
-            "2024-01-24": Math.random() * 100 % 100,
-            "2024-01-25": Math.random() * 100 % 100,
-            "2024-01-26": Math.random() * 100 % 100,
-            "2024-01-27": Math.random() * 100 % 100,
-            "2024-01-28": Math.random() * 100 % 100,
-            "2024-01-29": Math.random() * 100 % 100,
-            "2024-01-30": Math.random() * 100 % 100,
-            "2024-01-31": Math.random() * 100 % 100
-    
-        }
+        //                           Chart info
+// Get today's date
+const today = new Date();
+
+// Create lists to store the dates and data for the last 30 days
+const last30DaysData = [];
+const last30DaysDates = [];
+
+// Loop through the last 30 days and append the corresponding dates and random data points
+for (let i = 0; i < 30; i++) {
+    // Calculate the date i days ago
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    // Generate a random data point between 0 and 100
+    const randomData = Math.floor(Math.random() * 101);
+    // Format the date as mm/dd/yyyy
+    const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+    // Append the formatted date and random data point to the lists
+    last30DaysData.push(randomData);
+    last30DaysDates.push(formattedDate);
+}
+console.log(last30DaysData);
+        selectedItemData = {
+  labels: [last30DaysDates],
+  datasets: [
+    {
+      label: 'Dataset 1',
+      fill: true,
+      lineTension: 0.3,
+      backgroundColor: 'rgba(225, 204,230, .3)',
+      borderColor: 'rgb(205, 130, 158)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgb(205, 130,1 58)',
+      pointBackgroundColor: 'rgb(255, 255, 255)',
+      pointBorderWidth: 10,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgb(0, 0, 0)',
+      pointHoverBorderColor: 'rgba(220, 220, 220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [last30DaysData],
+    },
+  ],
+};
       searchItem = item.name;
       filteredItems = []; // Hide dropdown after selection
     }
@@ -160,9 +176,8 @@
         {#if selectedItem}
         <h3 class="font-bold text-lg">Item info: {formatName(selectedItem.name)}</h3>
         <p class="py-4">Item ID: {selectedItem.id}</p>
+        <Line data={ selectedItemData }/>
         {/if}
-        <LinkedLabel linked="link-2" /> 
-        <LinkedChart { data } type="line" gap="4" lineColor="#ca9ee6" fill="#8caaee" linked="link-2" showValue valuePosition="floating"/>
         <div class="modal-action">
           <form method="dialog">
             <!-- if there is a button in form, it will close the modal -->
@@ -176,7 +191,7 @@
     <dialog id="detailedStats" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
           {#if selectedItem}
-          <h3 class="font-bold text-lg">Detailed stats <LinkedLabel linked="link-2"/> {formatName(selectedItem.name)}</h3>
+          <h3 class="font-bold text-lg">Detailed stats {formatName(selectedItem.name)}</h3>
           <p class="py-4">Item ID: {selectedItem.id}</p>
           {/if}
           <div class="modal-action">

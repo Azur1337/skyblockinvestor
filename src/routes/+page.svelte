@@ -9,7 +9,6 @@ function openModal(modal:any) {
 }
 //--------------------------------------------------------------------------------
 </script>
-<html lang="en" data-theme={theme}>
   <button class="btn" on:click={()=> openModal("my_modal_1")}>open modal</button>
   <dialog id="my_modal_1" class="modal">
     <div class="modal-box">
@@ -23,4 +22,3 @@ function openModal(modal:any) {
       </div>
     </div>
   </dialog>
-</html>

@@ -1,6 +1,8 @@
 <script lang=ts>
     import { onMount } from 'svelte';
     import { Line } from 'svelte-chartjs'
+    import barchart from "../../static/barchart.svg"
+    import linechart from "../../static/linechart.svg"
     import {Chart as ChartJS, Title,Tooltip,Legend,LineElement,LinearScale,PointElement,CategoryScale,} from 'chart.js';
     ChartJS.register(Title,Tooltip,Legend,LineElement,LinearScale,PointElement,CategoryScale);
     let items: any[] = [];
@@ -12,9 +14,13 @@
     let theme: any;
     let selectedItem:any;
     let selectedItemData:any;
+    let itemAuctionData:any;
+    let itemBazaarDataDaily:any;
+    let validBazaarItems:any[];
     
     onMount(() => {
       getItems();
+      getValidBazaarItems();
     });
     //--------------------------------------------------------------------------------
     //                   Utility functions
@@ -59,6 +65,58 @@
         console.error("Error fetching items:", error);
       }
     }
+
+    async function getValidBazaarItems() {
+      try {
+        const res = await fetch(`https://sky.coflnet.com/api/items/bazaar/tags`, {
+          method: "GET",
+        });
+        if (!res.ok) {
+          console.log(`Bazaar Items not found ${res.status}`);     
+        } else {
+          console.log(`Bazaar Items successfully fetched`);
+          const data = await res.json();
+          validBazaarItems = data.map(item => item);
+          console.log(validBazaarItems);
+        }
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    }
+
+    async function getItemHistoryData(item:any) {
+      if (validBazaarItems.includes(item.id)) {
+      try {
+        const res = await fetch(`https://sky.coflnet.com/api/bazaar/${item.id}/history/day`, {
+          method: "GET",
+        });
+        if (!res.ok) {
+          console.log(`No Bazaardata found for ${item.name} with id ${item.id}`);    
+        } else {
+          console.log(`Bazaardata found for ${item.name} with id ${item.id}`);
+          const data = await res.json();
+          itemBazaarDataDaily = data.items;
+        }
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    } else {
+      try {
+        const res = await fetch(`https://sky.coflnet.com/api/auctions/tag/${item.id}/sold?page=1&pageSize=1000`, {
+          method: "GET",
+        });
+        if (!res.ok) {
+          console.log(`No Auctiondata found for ${item.name} with id ${item.id}`);    
+        } else {
+          console.log(`Auctiondata found for ${item.name} with id ${item.id}`);
+          const data = await res.json();
+          itemAuctionData = data.items;
+        }
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    }
+    }
     
     //--------------------------------------------------------------------------------
     //                   Itemfilter functions
@@ -101,28 +159,28 @@ for (let i = 0; i < 30; i++) {
 }
 console.log(last30DaysData);
         selectedItemData = {
-  labels: [last30DaysDates],
+  labels: last30DaysDates,
   datasets: [
     {
       label: 'Dataset 1',
       fill: true,
-      lineTension: 0.3,
+      lineTension: 0.1,
       backgroundColor: 'rgba(225, 204,230, .3)',
-      borderColor: 'rgb(205, 130, 158)',
+      borderColor: 'rgb(202, 158, 230)',
       borderCapStyle: 'butt',
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: 'miter',
-      pointBorderColor: 'rgb(205, 130,1 58)',
+      pointBorderColor: 'rgb(244, 184, 228)',
       pointBackgroundColor: 'rgb(255, 255, 255)',
-      pointBorderWidth: 10,
+      pointBorderWidth: 7,
       pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgb(0, 0, 0)',
-      pointHoverBorderColor: 'rgba(220, 220, 220,1)',
+      pointHoverBackgroundColor: 'rgb(255, 255, 255)',
+      pointHoverBorderColor: 'rgb(244, 184, 228)',
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [last30DaysData],
+      data: last30DaysData,
     },
   ],
 };
@@ -137,8 +195,21 @@ console.log(last30DaysData);
     //                   Modal functions
     //--------------------------------------------------------------------------------
     function openModal(modal:any) {
+        getItemHistoryData(selectedItem);
         document.getElementById(modal).showModal();
     }
+
+    //--------------------------------------------------------------------------------
+    //                     Radiobutton functions
+    //--------------------------------------------------------------------------------
+    const radios = document.querySelectorAll('.custom-radio');
+
+    radios.forEach(radio => {
+      radio.addEventListener('click', () => {
+        radios.forEach(r => r.querySelector('img').classList.remove('text-blue-500'));
+        radio.querySelector('img').classList.add('text-blue-500');
+      });
+    });
     //--------------------------------------------------------------------------------
     </script>
     <html lang="en" data-theme={theme}>
@@ -194,6 +265,14 @@ console.log(last30DaysData);
           <h3 class="font-bold text-lg">Detailed stats {formatName(selectedItem.name)}</h3>
           <p class="py-4">Item ID: {selectedItem.id}</p>
           {/if}
+          <label class="custom-radio">
+            <input type="radio" name="radio" class="hidden" />
+            <img src={barchart} class="w-6 h-6 text-gray-500" alt="radio" />
+          </label>
+          <label class="custom-radio">
+            <input type="radio" name="radio" class="hidden" />
+            <img src={linechart} class="w-6 h-6 text-gray-500" alt="radio" />
+          </label>
           <div class="modal-action">
             <form method="dialog">
               <!-- if there is a button in form, it will close the modal -->

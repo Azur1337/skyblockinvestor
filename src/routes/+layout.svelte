@@ -1,8 +1,7 @@
 <script lang=ts>
     import { onMount } from 'svelte';
-    import { Line } from 'svelte-chartjs'
-    import barchart from "../../static/barchart.svg"
-    import linechart from "../../static/linechart.svg"
+    import { Line } from 'svelte-chartjs';
+    import link from '../../static/link.svg'
     import {Chart as ChartJS, Title,Tooltip,Legend,LineElement,LinearScale,PointElement,CategoryScale,} from 'chart.js';
     ChartJS.register(Title,Tooltip,Legend,LineElement,LinearScale,PointElement,CategoryScale);
     let items: any[] = [];
@@ -11,12 +10,15 @@
     let toastTimeout: number;
     let searchItem: string = '';
     let filteredItems: any[] = [];
-    let theme: any;
+    let theme: any = "dark";
     let selectedItem:any;
     let selectedItemData:any;
     let itemAuctionData:any;
-    let itemBazaarDataDaily:any;
+    let itemBazaarDataWeek:any;
     let validBazaarItems:any[];
+    const today = new Date(); // Get today's date
+    let last30DaysData:[] = []; // Create lists to store the dates and data for the last 30 days
+    let last30DaysDates:[] = [];
     
     onMount(() => {
       getItems();
@@ -77,7 +79,6 @@
           console.log(`Bazaar Items successfully fetched`);
           const data = await res.json();
           validBazaarItems = data.map(item => item);
-          console.log(validBazaarItems);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -87,7 +88,7 @@
     async function getItemHistoryData(item:any) {
       if (validBazaarItems.includes(item.id)) {
       try {
-        const res = await fetch(`https://sky.coflnet.com/api/bazaar/${item.id}/history/day`, {
+        const res = await fetch(`https://sky.coflnet.com/api/bazaar/${item.id}/history/week`, {
           method: "GET",
         });
         if (!res.ok) {
@@ -95,7 +96,8 @@
         } else {
           console.log(`Bazaardata found for ${item.name} with id ${item.id}`);
           const data = await res.json();
-          itemBazaarDataDaily = data.items;
+          itemBazaarDataWeek = await data.items;
+          console.log(data, "test");
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -134,46 +136,85 @@
       }
     }
     
+    //-----------------------------------------------------------------------------------------
+    //                           Chart info
+    //-----------------------------------------------------------------------------------------
     function selectItem(item: any) {
-        selectedItem = item;
-        //                           Chart info
-// Get today's date
-const today = new Date();
-
-// Create lists to store the dates and data for the last 30 days
-const last30DaysData = [];
-const last30DaysDates = [];
-
-// Loop through the last 30 days and append the corresponding dates and random data points
-for (let i = 0; i < 30; i++) {
+      last30DaysData = []; // Clear the array before populating it with new data
+      last30DaysDates = [];
+      selectedItem = item;
+      for (let i = 0; i < 30; i++) {
     // Calculate the date i days ago
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    // Generate a random data point between 0 and 100
     const randomData = Math.floor(Math.random() * 101);
     // Format the date as mm/dd/yyyy
     const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
-    // Append the formatted date and random data point to the lists
     last30DaysData.push(randomData);
-    last30DaysDates.push(formattedDate);
+    last30DaysDates.unshift(formattedDate); // Add to the beginning of the array
 }
-console.log(last30DaysData);
+
+console.log("Dates:", last30DaysDates);
+console.log("Data:", last30DaysData);
+
         selectedItemData = {
   labels: last30DaysDates,
   datasets: [
     {
-      label: 'Dataset 1',
+      label: 'Median Price',
       fill: true,
       lineTension: 0.1,
       backgroundColor: 'rgba(225, 204,230, .3)',
-      borderColor: 'rgb(202, 158, 230)',
+      borderColor: 'rgb(239, 159, 118)',
       borderCapStyle: 'butt',
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: 'miter',
-      pointBorderColor: 'rgb(244, 184, 228)',
+      pointBorderColor: 'rgb(239, 159, 118)',
       pointBackgroundColor: 'rgb(255, 255, 255)',
-      pointBorderWidth: 7,
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgb(255, 255, 255)',
+      pointHoverBorderColor: 'rgb(244, 184, 228)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: last30DaysData,
+    },
+    {
+      label: 'Higher Price',
+      fill: true,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(225, 204,230, .3)',
+      borderColor: 'rgb(231, 130, 132)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgb(231, 130, 132)',
+      pointBackgroundColor: 'rgb(255, 255, 255)',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgb(255, 255, 255)',
+      pointHoverBorderColor: 'rgb(244, 184, 228)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: last30DaysData,
+    },
+    {
+      label: 'Lower Price',
+      fill: true,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(225, 204,230, .3)',
+      borderColor: 'rgb(166, 209, 137)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgb(166, 209, 137)',
+      pointBackgroundColor: 'rgb(255, 255, 255)',
+      pointBorderWidth: 1,
       pointHoverRadius: 5,
       pointHoverBackgroundColor: 'rgb(255, 255, 255)',
       pointHoverBorderColor: 'rgb(244, 184, 228)',
@@ -196,20 +237,10 @@ console.log(last30DaysData);
     //--------------------------------------------------------------------------------
     function openModal(modal:any) {
         getItemHistoryData(selectedItem);
-        document.getElementById(modal).showModal();
+    // This code will only execute in the browser environment
+    document.getElementById(modal).showModal();
+
     }
-
-    //--------------------------------------------------------------------------------
-    //                     Radiobutton functions
-    //--------------------------------------------------------------------------------
-    const radios = document.querySelectorAll('.custom-radio');
-
-    radios.forEach(radio => {
-      radio.addEventListener('click', () => {
-        radios.forEach(r => r.querySelector('img').classList.remove('text-blue-500'));
-        radio.querySelector('img').classList.add('text-blue-500');
-      });
-    });
     //--------------------------------------------------------------------------------
     </script>
     <html lang="en" data-theme={theme}>
@@ -245,7 +276,9 @@ console.log(last30DaysData);
     <dialog id="itemInfo" class="modal">
       <div class="modal-box w-11/12 max-w-5xl">
         {#if selectedItem}
+        <div class="flex flex-row">
         <h3 class="font-bold text-lg">Item info: {formatName(selectedItem.name)}</h3>
+      </div>
         <p class="py-4">Item ID: {selectedItem.id}</p>
         <Line data={ selectedItemData }/>
         {/if}
@@ -265,14 +298,6 @@ console.log(last30DaysData);
           <h3 class="font-bold text-lg">Detailed stats {formatName(selectedItem.name)}</h3>
           <p class="py-4">Item ID: {selectedItem.id}</p>
           {/if}
-          <label class="custom-radio">
-            <input type="radio" name="radio" class="hidden" />
-            <img src={barchart} class="w-6 h-6 text-gray-500" alt="radio" />
-          </label>
-          <label class="custom-radio">
-            <input type="radio" name="radio" class="hidden" />
-            <img src={linechart} class="w-6 h-6 text-gray-500" alt="radio" />
-          </label>
           <div class="modal-action">
             <form method="dialog">
               <!-- if there is a button in form, it will close the modal -->

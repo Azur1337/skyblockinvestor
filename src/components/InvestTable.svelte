@@ -3,160 +3,108 @@
 		<!-- head -->
 		<thead>
 			<tr>
-				<th>
-					<label>
-						<input type="checkbox" class="checkbox" />
-					</label>
-				</th>
 				<th>Name</th>
-				<th>Job</th>
-				<th>Favorite Color</th>
+				<th>Quantity</th>
+				<th>Profit Per Stock</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			<!-- row 1 -->
 			<tr>
-				<th>
-					<label>
-						<input type="checkbox" class="checkbox" />
-					</label>
-				</th>
 				<td>
 					<div class="flex items-center gap-3">
 						<div class="avatar">
 							<div class="mask mask-squircle w-12 h-12">
-								<img
-									src="https://img.daisyui.com/tailwind-css-component-profile-2@56w.png"
-									alt="Avatar Tailwind CSS Component"
-								/>
+								<img src="src/components/images/BlackSheep.png" alt="Black Sheep Pet Skin" />
 							</div>
 						</div>
 						<div>
-							<div class="font-bold">Hart Hagerty</div>
-							<div class="text-sm opacity-50">United States</div>
+							<div class="font-bold">Black Sheep Skin</div>
+							<div class="text-sm opacity-50">Pet Skin</div>
 						</div>
 					</div>
 				</td>
 				<td>
-					Zemlak, Daniel and Leannon
-					<br />
-					<span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+					<span class="badge badge-ghost badge-sm">1</span>
 				</td>
-				<td>Purple</td>
+				<td class="text-green-500 font-bold">+1 130 932 102$</td>
 				<th>
 					<button class="btn btn-ghost btn-xs">details</button>
 				</th>
 			</tr>
 			<!-- row 2 -->
 			<tr>
-				<th>
-					<label>
-						<input type="checkbox" class="checkbox" />
-					</label>
-				</th>
 				<td>
 					<div class="flex items-center gap-3">
 						<div class="avatar">
 							<div class="mask mask-squircle w-12 h-12">
-								<img
-									src="https://img.daisyui.com/tailwind-css-component-profile-3@56w.png"
-									alt="Avatar Tailwind CSS Component"
-								/>
+								<img src="src/components/images/PurpleSheep.png" alt="Purple Sheep Pet Skin" />
 							</div>
 						</div>
 						<div>
-							<div class="font-bold">Brice Swyre</div>
-							<div class="text-sm opacity-50">China</div>
+							<div class="font-bold">Purple Sheep Skin</div>
+							<div class="text-sm opacity-50">Pet Skin</div>
 						</div>
 					</div>
 				</td>
 				<td>
-					Carroll Group
-					<br />
-					<span class="badge badge-ghost badge-sm">Tax Accountant</span>
+					<span class="badge badge-ghost badge-sm">2</span>
 				</td>
-				<td>Red</td>
+				<td class="text-green-500 font-bold">+529 725 082$</td>
 				<th>
 					<button class="btn btn-ghost btn-xs">details</button>
 				</th>
 			</tr>
 			<!-- row 3 -->
 			<tr>
-				<th>
-					<label>
-						<input type="checkbox" class="checkbox" />
-					</label>
-				</th>
 				<td>
 					<div class="flex items-center gap-3">
 						<div class="avatar">
 							<div class="mask mask-squircle w-12 h-12">
 								<img
-									src="https://img.daisyui.com/tailwind-css-component-profile-4@56w.png"
-									alt="Avatar Tailwind CSS Component"
+									src="src/components/images/WitherGoggles.png"
+									alt="Celestial Wither Goggles Skin"
 								/>
 							</div>
 						</div>
 						<div>
-							<div class="font-bold">Marjy Ferencz</div>
-							<div class="text-sm opacity-50">Russia</div>
+							<div class="font-bold">Celestial Wither Goggles Skin</div>
+							<div class="text-sm opacity-50">Helmet Skin</div>
 						</div>
 					</div>
 				</td>
 				<td>
-					Rowe-Schoen
-					<br />
-					<span class="badge badge-ghost badge-sm">Office Assistant I</span>
+					<span class="badge badge-ghost badge-sm">4</span>
 				</td>
-				<td>Crimson</td>
+				<td class="text-green-500 font-bold">+30 727 092$</td>
 				<th>
 					<button class="btn btn-ghost btn-xs">details</button>
 				</th>
 			</tr>
 			<!-- row 4 -->
 			<tr>
-				<th>
-					<label>
-						<input type="checkbox" class="checkbox" />
-					</label>
-				</th>
 				<td>
 					<div class="flex items-center gap-3">
 						<div class="avatar">
 							<div class="mask mask-squircle w-12 h-12">
-								<img
-									src="https://img.daisyui.com/tailwind-css-component-profile-5@56w.png"
-									alt="Avatar Tailwind CSS Component"
-								/>
+								<img src="src/components/images/MeowMusicRune.png" alt="Meow Music Rune" />
 							</div>
 						</div>
 						<div>
-							<div class="font-bold">Yancy Tear</div>
-							<div class="text-sm opacity-50">Brazil</div>
+							<div class="font-bold">Meow Music Rune</div>
+							<div class="text-sm opacity-50">Weapon Rune</div>
 						</div>
 					</div>
 				</td>
 				<td>
-					Wyman-Ledner
-					<br />
-					<span class="badge badge-ghost badge-sm">Community Outreach Specialist</span>
+					<span class="badge badge-ghost badge-sm">69</span>
 				</td>
-				<td>Indigo</td>
+				<td class="text-green-500 font-bold">+1 932 102$</td>
 				<th>
 					<button class="btn btn-ghost btn-xs">details</button>
 				</th>
 			</tr>
 		</tbody>
-		<!-- foot -->
-		<tfoot>
-			<tr>
-				<th></th>
-				<th>Name</th>
-				<th>Job</th>
-				<th>Favorite Color</th>
-				<th></th>
-			</tr>
-		</tfoot>
 	</table>
 </div>

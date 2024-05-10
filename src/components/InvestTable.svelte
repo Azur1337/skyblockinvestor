@@ -1,3 +1,7 @@
+<script>
+	import ModalStats from './ModalStats.svelte';
+</script>
+
 <div class="overflow-x-auto">
 	<table class="table">
 		<!-- head -->
@@ -102,9 +106,19 @@
 				</td>
 				<td class="text-green-500 font-bold">+1 932 102$</td>
 				<th>
-					<button class="btn btn-ghost btn-xs">details</button>
+					<button class="btn btn-ghost btn-xs" on:click={() => modal.showModal()}>details</button>
 				</th>
 			</tr>
 		</tbody>
 	</table>
 </div>
+
+<dialog id="modal" class="modal">
+	<div class="modal-box">
+		<form method="dialog">
+			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+		</form>
+		<h3 class="font-bold text-lg">Meow Music Rune</h3>
+		<ModalStats />
+	</div>
+</dialog>
